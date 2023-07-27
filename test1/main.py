@@ -1,5 +1,4 @@
 from ExpressionSolver import ExpressionSolver
 
-#expresionPath = input('Enter path file: ');
-expresionPath = 'test.txt'
+expresionPath = input('Enter path file: ');
 ExpressionSolver(expresionPath)

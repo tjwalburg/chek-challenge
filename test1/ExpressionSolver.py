@@ -25,32 +25,32 @@ class ExpressionSolver(object):
 		expressionsFile = open(self.pathFile, 'r')
 
 		for line in expressionsFile.readlines():
-			self.expressionsList.append(line)	
+			expression = line.rstrip('\n')
+			self.expressionsList.append(expression)	
 
 		expressionsFile.close()
 
 	def beginSolver(self):
 		for expression in self.expressionsList:
-			expressionWithoutTrail = expression.rstrip('\n')
 			try:
-				result = self.createDataStructureForExpression(expressionWithoutTrail)
-				print(f'The result for \"{expressionWithoutTrail}\" is', result)
+				result = self.createDataStructureForExpression(expression)
+				print(f'The result for \"{expression}\" is', result)
 			except Exception as e:
-				print(f'The expression \"{expressionWithoutTrail}\" produces a SyntaxError')
+				print(f'The expression \"{expression}\" produces a SyntaxError')
 
 	def evaluateExpression(self):
 		operator = self.argumentsList.pop()
-		b = int(self.numbersList.pop())
-		a = int(self.numbersList.pop())
+		rightSideOperation = int(self.numbersList.pop())
+		leftSideOperation = int(self.numbersList.pop())
 
 		if (operator == '+'):
-			self.numbersList.append(a + b)
-		elif operator ==  '-':
-			self.numbersList.append(a - b)
-		elif operator == '*':
-			self.numbersList.append(a * b)
+			self.numbersList.append(leftSideOperation + rightSideOperation)
+		elif (operator ==  '-'):
+			self.numbersList.append(leftSideOperation - rightSideOperation)
+		elif (operator == '*'):
+			self.numbersList.append(leftSideOperation * rightSideOperation)
 		else:
-			self.numbersList.append(a/b)
+			self.numbersList.append(leftSideOperation/rightSideOperation)
 	
 
 	def createDataStructureForExpression(self, expression):
@@ -62,15 +62,15 @@ class ExpressionSolver(object):
 			if (token in self.openBracketsList):
 				self.argumentsList.append(token)
 
-			elif isinstance(token, int):
+			elif (isinstance(token, int)):
 				self.numbersList.append(token)
 
-			elif token in self.operatorsList:
-				if (self.argumentsList and self.argumentsList[-1] in self.operatorsList and self.priority[self.argumentsList[-1]] >= self.priority[token]):
+			elif (token in self.operatorsList):
+				if (self.validateIfOperationIsPriority):
 					self.evaluateExpression()
 				self.argumentsList.append(token)
 
-			elif token in self.closeBracketsList:
+			elif (token in self.closeBracketsList):
 				self.evaluateExpression()
 				if (self.argumentsList[-1] in self.openBracketsList):
 					self.argumentsList.pop()
@@ -81,18 +81,25 @@ class ExpressionSolver(object):
 
 		return self.numbersList.pop()
 
+	def validateIfOperationIsPriority(self):
+	    return self.argumentsList 
+	    	and self.argumentsList[-1] in self.operatorsList 
+	    	and self.priority[self.argumentsList[-1]] >= self.priority[token]
+
 	def createListByExpression(self, expression):
 		expressionList = []
 		index = 0
 
-		while index < len(expression):
+		while (index < len(expression)):
 			tokenToAdd = expression[index]
 			if (expression[index].isdigit()):
 				subIndex = index
-				while subIndex < len(expression) and expression[subIndex].isdigit():
+				while (subIndex < len(expression) and expression[subIndex].isdigit()):
 					subIndex += 1
+
 				tokenToAdd = int(expression[index:subIndex])
 				index = subIndex
+
 			else:
 				index += 1
 			
