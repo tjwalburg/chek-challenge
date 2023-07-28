@@ -1,3 +1,3 @@
 # Chek challenge
 
-Desarrollado en python 
+Challenge desarrollado en python por Teresita Jofré.
